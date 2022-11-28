@@ -1,19 +1,22 @@
 #! /usr/bin/env python3
-# take a saved times crossword .html page and convert it to a puz file. 
 
 import sys
 import json
 import html
 from unidecode import unidecode
+import browser_cookie3
+import requests
 
-input_file = sys.argv[1]
+cj = browser_cookie3.chrome()
+puz_url = sys.argv[1]
+puz_url = puz_url.replace("puzzles","play")
 
-with open(input_file, 'r') as f:
-    for line in f.readlines():
-       if 'oApp.puzzle_json' in line:
-           json_text = line
-           #clean up the string to make valid json.
-           json_text = json_text[35:-2]
+page = requests.get(puz_url,cookies=cj)
+
+for line in page.text.split('\n'):
+    if 'oApp.puzzle_json' in line: 
+         json_text = line
+         json_text = json_text[35:-1]
 
 #load the clean text into json object. 
 xword_data = json.loads(json_text)
@@ -27,11 +30,11 @@ rows = (xword_data['data']['copy']['gridsize']['rows'])
 #the number of cols
 cols = (xword_data['data']['copy']['gridsize']['cols'])
 puz_copyright = xword_data.get('data').get('copy').get('date-publish')
-
 grid_contents = (xword_data['data']['grid'])
 clue_contents = (xword_data['data']['copy']['clues'])
 clue_acrosses = (clue_contents[0])
 clue_downs = (clue_contents[1])
+
 # open a filehandle for the puz text file, same name as the title with a .txt
 out_file = open(title + ".txt", 'w')
 out_file.write("<ACROSS PUZZLE>")
@@ -85,3 +88,4 @@ for clue in clue_downs['clues']:
 out_file.write("<NOTEPAD>")
 out_file.write("\n")
 out_file.close()
+
