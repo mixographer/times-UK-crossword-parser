@@ -3,7 +3,6 @@
 import sys
 import json
 import html
-from unidecode import unidecode
 import browser_cookie3
 import requests
 
@@ -72,7 +71,6 @@ for row in grid_contents:
 out_file.write("<ACROSS>")
 out_file.write("\n")
 for clue in clue_acrosses['clues']:
-    #clue_text = unidecode(clue['clue']) 
     clue_text = html.unescape(clue['clue']) 
     clue_length = (clue['format']) 
     out_file.write(clue_text + " (" + clue_length + ")")
@@ -80,7 +78,6 @@ for clue in clue_acrosses['clues']:
 out_file.write("<DOWN>")
 out_file.write("\n")
 for clue in clue_downs['clues']:
-    #clue_text = unidecode(clue['clue'])
     clue_text = html.unescape(clue['clue'])
     clue_length = (clue['format']) 
     out_file.write(clue_text + " (" + clue_length + ")")
