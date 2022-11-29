@@ -85,4 +85,5 @@ for clue in clue_downs['clues']:
 out_file.write("<NOTEPAD>")
 out_file.write("\n")
 out_file.close()
+print("Writing file " + title)
 
