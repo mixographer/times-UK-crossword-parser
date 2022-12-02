@@ -5,6 +5,7 @@ import json
 import html
 import browser_cookie3
 import requests
+import os
 
 cj = browser_cookie3.chrome()
 puz_url = sys.argv[1]
@@ -34,56 +35,62 @@ clue_contents = (xword_data['data']['copy']['clues'])
 clue_acrosses = (clue_contents[0])
 clue_downs = (clue_contents[1])
 
-# open a filehandle for the puz text file, same name as the title with a .txt
-out_file = open(title + ".txt", 'w')
-out_file.write("<ACROSS PUZZLE>")
-out_file.write("\n")
-out_file.write("<TITLE>")
-out_file.write("\n")
-out_file.write(title)
-out_file.write("\n")
-out_file.write("<AUTHOR>")
-out_file.write("\n")
-out_file.write (puz_author)
-out_file.write("\n")
-out_file.write("<COPYRIGHT>")
-out_file.write("\n")
-if puz_copyright != None :
-    out_file.write(puz_copyright)
+def write_out_file():
+    # open a filehandle for the puz text file, same name as the title with a .txt
+    out_file = open(title + ".txt", 'w')
+    out_file.write("<ACROSS PUZZLE>")
     out_file.write("\n")
-else:
-    out_file.write("Unknown Times Puzzle")
-out_file.write("<SIZE>")
-out_file.write("\n")
-out_file.write(rows)
-out_file.write("x")
-out_file.write(cols)
-out_file.write("\n")
-out_file.write("<GRID>")
-out_file.write("\n")
-for row in grid_contents:
-    for square in row:
-        if (square['Letter']==""):
-            out_file.write(".")
-        else:
-            out_file.write(square['Letter'])
-    out_file.write("\n")    
-out_file.write("<ACROSS>")
-out_file.write("\n")
-for clue in clue_acrosses['clues']:
-    clue_text = html.unescape(clue['clue']) 
-    clue_length = (clue['format']) 
-    out_file.write(clue_text + " (" + clue_length + ")")
+    out_file.write("<TITLE>")
     out_file.write("\n")
-out_file.write("<DOWN>")
-out_file.write("\n")
-for clue in clue_downs['clues']:
-    clue_text = html.unescape(clue['clue'])
-    clue_length = (clue['format']) 
-    out_file.write(clue_text + " (" + clue_length + ")")
+    out_file.write(title)
     out_file.write("\n")
-out_file.write("<NOTEPAD>")
-out_file.write("\n")
-out_file.close()
-print("Writing file " + title)
+    out_file.write("<AUTHOR>")
+    out_file.write("\n")
+    out_file.write (puz_author)
+    out_file.write("\n")
+    out_file.write("<COPYRIGHT>")
+    out_file.write("\n")
+    if puz_copyright != None :
+        out_file.write(puz_copyright)
+        out_file.write("\n")
+    else:
+        out_file.write("Unknown Times Puzzle")
+    out_file.write("<SIZE>")
+    out_file.write("\n")
+    out_file.write(rows)
+    out_file.write("x")
+    out_file.write(cols)
+    out_file.write("\n")
+    out_file.write("<GRID>")
+    out_file.write("\n")
+    for row in grid_contents:
+        for square in row:
+            if (square['Letter']==""):
+                out_file.write(".")
+            else:
+                out_file.write(square['Letter'])
+        out_file.write("\n")    
+    out_file.write("<ACROSS>")
+    out_file.write("\n")
+    for clue in clue_acrosses['clues']:
+        clue_text = html.unescape(clue['clue']) 
+        clue_length = (clue['format']) 
+        out_file.write(clue_text + " (" + clue_length + ")")
+        out_file.write("\n")
+    out_file.write("<DOWN>")
+    out_file.write("\n")
+    for clue in clue_downs['clues']:
+        clue_text = html.unescape(clue['clue'])
+        clue_length = (clue['format']) 
+        out_file.write(clue_text + " (" + clue_length + ")")
+        out_file.write("\n")
+    out_file.write("<NOTEPAD>")
+    out_file.write("\n")
+    out_file.close()
+    #print("Writing file " + title)
 
+if not os.path.exists(title + ".txt"):
+    write_out_file()
+    print("Wrote file " + title + ".txt")
+else:
+    print("Not saving, a file named " + title + ".txt already exists")
